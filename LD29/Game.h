@@ -3,7 +3,7 @@
 class BaseAnt;
 class Projectile;
 class Player;
-class AntSpawner;
+class SpawnManager;
 
 #include <SFML\Graphics.hpp>
 
@@ -52,8 +52,7 @@ private:
 	bool p_isRunning;
 	sf::RenderWindow* p_renderWindow;
 
-	AntSpawner* p_spawnerRight;
-	AntSpawner* p_spawnerLeft;
+	SpawnManager* p_spawnManager;
 
 	EntityList p_entityList;
 	Player* p_player;
@@ -67,4 +66,7 @@ private:
 	std::list<sf::IntRect> p_collisions;
 
 	sf::Font p_guiFont;
+
+	sf::Time p_roundTime;
+	sf::Time p_currentRoundTime;
 };

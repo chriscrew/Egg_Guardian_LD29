@@ -5,6 +5,10 @@
 #include "Mouse.h"
 #include "Projectile.h"
 #include "AntSpawner.h"
+#include "SpawnManager.h"
+
+#include <iomanip>
+#include <sstream>
 
 Game* Game::p_game = NULL;
 Mouse* Mouse::p_mouse;
@@ -26,11 +30,17 @@ Game::Game()
 
 	Mouse::p_mouse = new Mouse();
 
+	p_roundTime = sf::seconds(15);
+	p_currentRoundTime = sf::Time::Zero;
+
 	p_player = new Player(sf::Vector2f(400, 300), 80.0f);
 	p_entityList.push_back(p_player);
 
-	p_spawnerLeft = new AntSpawner(sf::Vector2f(200, 175), BaseAnt::AntType::Melee, sf::seconds(5));
-	p_spawnerRight = new AntSpawner(sf::Vector2f(600, 175), BaseAnt::AntType::Melee, sf::seconds(5));
+	p_spawnManager = new SpawnManager();
+	p_spawnManager->addSpawner(new AntSpawner(sf::Vector2f(200, 175), BaseAnt::AntType::Melee, sf::seconds(5)));
+	p_spawnManager->addSpawner(new AntSpawner(sf::Vector2f(600, 175), BaseAnt::AntType::Melee, sf::seconds(5)));
+	p_spawnManager->addSpawner(new AntSpawner(sf::Vector2f(600, 300), BaseAnt::AntType::Melee, sf::seconds(5)));
+	p_spawnManager->start();
 
 	p_dirttex.loadFromFile("dirtTiles.png");
 	p_guiFont.loadFromFile("guiFont.ttf");
@@ -40,11 +50,8 @@ Game::Game()
 
 Game::~Game()
 {
-	delete p_spawnerLeft;
-	p_spawnerLeft = NULL;
-
-	delete p_spawnerRight;
-	p_spawnerRight = NULL;
+	delete p_spawnManager;
+	p_spawnManager = NULL;
 
 	delete p_player;
 	p_player = NULL;
@@ -96,6 +103,8 @@ void Game::stop()
 
 void Game::update(sf::Time elapsed)
 {
+	p_currentRoundTime += elapsed;
+
 	ProjectileList::iterator it = p_projectiles.begin();
 
 	while (it != p_projectiles.end())
@@ -147,8 +156,16 @@ void Game::update(sf::Time elapsed)
 		}
 	}
 
-	p_spawnerLeft->update(elapsed);
-	p_spawnerRight->update(elapsed);
+	if (p_currentRoundTime < p_roundTime)
+	{
+		p_spawnManager->update(elapsed);
+	}
+	else
+	{
+		p_spawnManager->stop();
+		p_currentRoundTime = p_roundTime;
+	}
+	
 }
 
 void Game::render()
@@ -188,6 +205,18 @@ void Game::render()
 	proteinText.setString("Protein: " + std::to_string(p_player->getProtein()));
 	proteinText.setCharacterSize(15);
 	proteinText.setPosition(5, 45);
+
+	sf::Text roundTimeText;
+	proteinText.setFont(p_guiFont);
+
+	sf::Time roundLeft = p_roundTime - p_currentRoundTime;
+
+	std::ostringstream out;
+	out << std::setprecision(0) << round(roundLeft.asSeconds());
+
+	proteinText.setString("Time Left: " + out.str());
+	proteinText.setCharacterSize(15);
+	proteinText.setPosition(400, 5);
 
 	p_renderWindow->draw(healthText);
 	p_renderWindow->draw(armourText);

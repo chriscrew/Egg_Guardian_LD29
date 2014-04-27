@@ -8,26 +8,45 @@ AntSpawner::AntSpawner(sf::Vector2f position, BaseAnt::AntType type, sf::Time ra
 	p_position = position;
 	p_spawnType = type;
 	p_rate = rate;
-	p_counter = sf::Time::Zero;
+	p_running = false;
+	reset();
 }
 
 void AntSpawner::update(sf::Time elapsed)
 {
-	p_counter += elapsed;
-
-	if (p_counter >= p_rate)
+	if (p_running)
 	{
-		switch (p_spawnType)
-		{
-		case BaseAnt::Melee:
-			Game::p_game->addAnt(new MeleeAnt(p_position, 80.0f));
-			break;
-		case BaseAnt::Ranged:
-			break;
-		default:
-			break;
-		}
+		p_counter += elapsed;
 
-		p_counter = sf::Time::Zero;
+		if (p_counter >= p_rate)
+		{
+			switch (p_spawnType)
+			{
+			case BaseAnt::Melee:
+				Game::p_game->addAnt(new MeleeAnt(p_position, 80.0f));
+				break;
+			case BaseAnt::Ranged:
+				break;
+			default:
+				break;
+			}
+
+			reset();
+		}
 	}
+}
+
+void AntSpawner::start()
+{
+	p_running = true;
+}
+
+void AntSpawner::stop()
+{
+	p_running = false;
+}
+
+void AntSpawner::reset()
+{
+	p_counter = sf::Time::Zero;
 }
