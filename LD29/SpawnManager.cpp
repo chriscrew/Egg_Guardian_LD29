@@ -30,11 +30,11 @@ void SpawnManager::addSpawner(AntSpawner* spawner)
 	p_spawners.push_back(spawner);
 }
 
-void SpawnManager::start()
+void SpawnManager::start(int round)
 {
 	for (AntSpawner* spawner : p_spawners)
 	{
-		spawner->start();
+		spawner->start(round);
 	}
 }
 

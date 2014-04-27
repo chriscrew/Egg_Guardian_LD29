@@ -7,7 +7,7 @@ class MeleeAntBrain;
 class MeleeAnt : public BaseAnt
 {
 public:
-	MeleeAnt(sf::Vector2f position, float speed);
+	MeleeAnt(sf::Vector2f position, float speed, int round);
 	~MeleeAnt() {}
 
 	virtual void update(sf::Time elapsed);

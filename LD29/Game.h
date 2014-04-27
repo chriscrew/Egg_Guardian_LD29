@@ -43,7 +43,11 @@ private:
 	void render();
 	void handleEvents(sf::Event& e);
 
+	void renderHelpMenu();
+
 	void generateMap();
+
+	void nextRound();
 
 private:
 
@@ -76,4 +80,7 @@ private:
 	int p_currentRound;
 
 	std::vector<int> p_map;
+
+	bool p_showHelpMenu;
+	bool p_roundWaiting;
 };

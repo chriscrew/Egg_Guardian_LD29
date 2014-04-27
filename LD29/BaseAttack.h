@@ -3,6 +3,7 @@
 #include "BaseAnt.h"
 
 #include <SFML\Graphics.hpp>
+#include <SFML\Audio.hpp>
 
 #include <string>
 
@@ -91,4 +92,7 @@ protected:
 	sf::Time p_timeLeft;
 
 	int p_damage;
+
+	sf::SoundBuffer p_attackSoundFile;
+	sf::Sound p_attackSound;
 };

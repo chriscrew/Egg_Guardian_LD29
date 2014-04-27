@@ -7,7 +7,7 @@ class ProjectileAntBrain;
 class FireAnt : public BaseAnt
 {
 public:
-	FireAnt(sf::Vector2f position, float speed);
+	FireAnt(sf::Vector2f position, float speed, int round);
 	~FireAnt();
 
 	virtual void update(sf::Time elapsed);

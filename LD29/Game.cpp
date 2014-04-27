@@ -25,6 +25,9 @@ Game::Game()
 , p_map()
 , p_camera(sf::FloatRect(0, 0, 768, 576))
 {
+	p_showHelpMenu = true;
+	p_roundWaiting = false;
+
 	p_map.resize(tileX * tileY);
 
 	int temp[] =
@@ -64,11 +67,11 @@ Game::Game()
 	p_entityList.push_back(p_player);
 
 	p_spawnManager = new SpawnManager();
-	p_spawnManager->addSpawner(new AntSpawner(sf::Vector2f(96, 96), BaseAnt::AntType::Melee, sf::seconds(2)));
-	p_spawnManager->start();
+	p_spawnManager->addSpawner(new AntSpawner(sf::Vector2f(96, 96), sf::seconds(5)));
+	p_spawnManager->start(p_currentRound);
 
-	p_dirttex.loadFromFile("dirtTiles.png");
-	p_guiFont.loadFromFile("guiFont.ttf");
+	p_dirttex.loadFromFile("media/dirtTiles.png");
+	p_guiFont.loadFromFile("media/guiFont.ttf");
 
 	generateMap();
 }
@@ -111,13 +114,40 @@ void Game::start()
 				stop();
 			}
 
-			handleEvents(e);
+			if (e.type == sf::Event::KeyPressed)
+			{
+				if (e.key.code == sf::Keyboard::Escape)
+				{
+					stop();
+				}
+
+				if (p_showHelpMenu)
+				{
+					if (e.key.code == sf::Keyboard::Return)
+					{
+						p_showHelpMenu = false;
+					}
+				}
+			}
+
+			if (!p_showHelpMenu)
+			{
+				handleEvents(e);
+			}
+		}
+
+		if (p_showHelpMenu)
+		{
+			renderHelpMenu();
 		}
 
 		Mouse::p_mouse->setMousePosition(*p_renderWindow);
 
-		update(elapsed);
-		render();
+		if (!p_showHelpMenu)
+		{
+			update(elapsed);
+			render();
+		}
 	}
 }
 
@@ -134,8 +164,11 @@ void Game::update(sf::Time elapsed)
 	if (p_player->isDead())
 		return;
 
-	if (p_currentRound > MAX_ROUNDS)
+	if (p_currentRound > MAX_ROUNDS && p_entityList.size() == 1)
 		return;
+
+	if (p_roundWaiting)
+		p_restTimeCounter -= elapsed;
 
 	AttackList::iterator it = p_attacks.begin();
 
@@ -209,41 +242,53 @@ void Game::update(sf::Time elapsed)
 	}
 	else
 	{
-		p_spawnManager->stop();
-		p_currentRoundTime = p_roundTime;
+		p_roundWaiting = true;
+	}
 
-		p_restTimeCounter -= elapsed;
+	if (p_roundWaiting)
+		nextRound();
+}
 
-		if (p_restTimeCounter <= sf::seconds(0))
+void Game::nextRound()
+{
+	p_spawnManager->stop();
+	p_currentRoundTime = p_roundTime;
+
+	if (p_restTimeCounter <= sf::seconds(0))
+	{
+		p_restTimeCounter = p_restTime;
+
+		++p_currentRound;
+
+		p_player->levelUp(p_currentRound);
+
+		if (p_currentRound == 2)
 		{
-			p_restTimeCounter = p_restTime;
-
-			++p_currentRound;
-
-			if (p_currentRound == 2)
-			{
-				p_map[22] = 3;
-				generateMap();
-				p_spawnManager->addSpawner(new AntSpawner(sf::Vector2f(672, 96), BaseAnt::AntType::Fast, sf::seconds(2)));
-			}
-
-			if (p_currentRound == 3)
-			{
-				p_map[85] = 3;
-				generateMap();
-				p_spawnManager->addSpawner(new AntSpawner(sf::Vector2f(96, 480), BaseAnt::AntType::Ranged, sf::seconds(5)));
-			}
-
-			if (p_currentRound == 4)
-			{
-				p_map[94] = 3;
-				generateMap();
-				p_spawnManager->addSpawner(new AntSpawner(sf::Vector2f(672, 480), BaseAnt::AntType::Melee, sf::seconds(5)));
-			}
-
-			p_currentRoundTime = sf::Time::Zero;
-			p_spawnManager->start();
+			p_map[22] = 3;
+			generateMap();
+			p_spawnManager->addSpawner(new AntSpawner(sf::Vector2f(672, 96), sf::seconds(4)));
 		}
+
+		if (p_currentRound == 3)
+		{
+			p_map[85] = 3;
+			generateMap();
+			p_spawnManager->addSpawner(new AntSpawner(sf::Vector2f(96, 480), sf::seconds(4)));
+		}
+
+		if (p_currentRound == 4)
+		{
+			p_map[94] = 3;
+			generateMap();
+			p_spawnManager->addSpawner(new AntSpawner(sf::Vector2f(672, 480), sf::seconds(3)));
+		}
+
+		p_currentRoundTime = sf::Time::Zero;
+
+		if (p_currentRound <= MAX_ROUNDS)
+			p_spawnManager->start(p_currentRound);
+
+		p_roundWaiting = false;
 	}
 }
 
@@ -289,19 +334,12 @@ void Game::render()
 	armourText.setCharacterSize(12);
 	armourText.setPosition(5, 35);
 
-	sf::Text proteinText;
-	proteinText.setFont(p_guiFont);
-	proteinText.setString("Protein: " + std::to_string(p_player->getProtein()));
-	proteinText.setCharacterSize(12);
-	proteinText.setPosition(5, 50);
-
 	sf::Text roundTimeText;
 	roundTimeText.setFont(p_guiFont);
 
 	p_renderWindow->draw(eggHealthText);
 	p_renderWindow->draw(healthText);
 	p_renderWindow->draw(armourText);
-	p_renderWindow->draw(proteinText);
 
 
 	if (p_player->isDead() || p_egg->isDead())
@@ -310,17 +348,17 @@ void Game::render()
 		gameOverText.setFont(p_guiFont);
 		gameOverText.setString("Game Over");
 		gameOverText.setCharacterSize(50);
-		gameOverText.setPosition(96, 80);
+		gameOverText.setPosition(230, 80);
 		p_renderWindow->draw(gameOverText);
 	}
-	else if (p_currentRound > MAX_ROUNDS)
+	else if (p_currentRound > MAX_ROUNDS && p_entityList.size() == 1)
 	{
 
 		sf::Text wonText;
 		wonText.setFont(p_guiFont);
 		wonText.setString("You Won");
 		wonText.setCharacterSize(50);
-		wonText.setPosition(96, 80);
+		wonText.setPosition(230, 80);
 		p_renderWindow->draw(wonText);
 	}
 	else
@@ -349,7 +387,7 @@ void Game::render()
 
 			roundWaitText.setString("Next Round in: " + next.str());
 			roundWaitText.setCharacterSize(50);
-			roundWaitText.setPosition(96, 80);
+			roundWaitText.setPosition(150, 80);
 			p_renderWindow->draw(roundWaitText);
 		}
 	}
@@ -421,4 +459,47 @@ sf::Vector2f Game::getPlayerPosition()
 sf::Vector2f Game::getEggPosition()
 {
 	return p_egg->getPosition();
+}
+
+void Game::renderHelpMenu()
+{
+	p_renderWindow->clear(sf::Color(63, 37, 24, 255));
+	p_renderWindow->setView(p_camera);
+
+	sf::Text titleText;
+	titleText.setFont(p_guiFont);
+	titleText.setString("Egg Guardian");
+	titleText.setCharacterSize(50);
+	titleText.setPosition(200, 100);
+	p_renderWindow->draw(titleText);
+
+	sf::Text infoText;
+	infoText.setFont(p_guiFont);
+	infoText.setString("Protect the last of your ants colonies from invaders \nLeft click to move \nRight click for melee \nSpace to shoot");
+	infoText.setCharacterSize(15);
+	infoText.setPosition(150, 200);
+	p_renderWindow->draw(infoText);
+
+	sf::Texture menuAnts;
+	menuAnts.loadFromFile("media/menu.png");
+
+	sf::Sprite renderMenu(menuAnts);
+	renderMenu.setPosition(50, 300);
+	p_renderWindow->draw(renderMenu);
+
+	sf::Text antInfoTest;
+	antInfoTest.setFont(p_guiFont);
+	antInfoTest.setString("Red Ant: (Ranged) Average Movement/High Damage \nBlue Ant: (Melee) Slow Movement/High Damage \nBlack Ant: (Melee) Fast Movement/Low Damage \n ");
+	antInfoTest.setCharacterSize(14);
+	antInfoTest.setPosition(275, 310);
+	p_renderWindow->draw(antInfoTest);
+
+	sf::Text startText;
+	startText.setFont(p_guiFont);
+	startText.setString("Prese enter to start");
+	startText.setCharacterSize(30);
+	startText.setPosition(185, 400);
+	p_renderWindow->draw(startText);
+
+	p_renderWindow->display();
 }

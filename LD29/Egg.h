@@ -14,7 +14,7 @@ public:
 
 		p_position = position;
 		p_health = 1000;
-		p_texture.loadFromFile("egg.png");
+		p_texture.loadFromFile("media/egg.png");
 
 		p_render.setTexture(p_texture);
 		p_render.setPosition(p_position);

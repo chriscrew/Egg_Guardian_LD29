@@ -14,7 +14,7 @@ public:
 
 	void addSpawner(AntSpawner* spawner);
 	void update(sf::Time elapsed);
-	void start();
+	void start(int round);
 	void stop();
 	void levelUp();
 

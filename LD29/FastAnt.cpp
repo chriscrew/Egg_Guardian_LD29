@@ -2,15 +2,16 @@
 #include "FastAnt.h"
 #include "Mouse.h"
 
-FastAnt::FastAnt(sf::Vector2f position, float speed)
-: MeleeAnt(position, speed)
+FastAnt::FastAnt(sf::Vector2f position, float speed, int round)
+: MeleeAnt(position, speed, round)
 {
-	p_health = 15;
-	p_armour = 10;
-	p_proteinReward = 150;
+	float modifier = (float)round / 5.0f;
 
-	p_meleeDamage = 1;
-	p_rangedDamage = 0;
+	p_health = 15 + (15 * modifier);
+	p_armour = 10 + (10 * modifier);
+	p_proteinReward = 150 + (150 * modifier);
+	p_meleeDamage = 2 + (2 * modifier);
+	p_rangedDamage = 0 + (0 * modifier);
 
 	p_render.setColor(sf::Color(44, 41, 24, 255));
 

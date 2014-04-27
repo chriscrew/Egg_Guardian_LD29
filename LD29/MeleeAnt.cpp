@@ -3,15 +3,17 @@
 #include "Mouse.h"
 #include "MeleeAntBrain.h"
 
-MeleeAnt::MeleeAnt(sf::Vector2f position, float speed)
+MeleeAnt::MeleeAnt(sf::Vector2f position, float speed, int round)
 : BaseAnt(AntType::Melee, position, speed)
 {
-	p_health = 50;
-	p_armour = 60;
-	p_proteinReward = 100;
+	float modifier = (float)round / 5.0f;
 
-	p_meleeDamage = 15;
-	p_rangedDamage = 0;
+	p_health = 50 + (50 * modifier);
+	p_armour = 60 + (60 * modifier);
+	p_proteinReward = 100 + (100 * modifier);
+	p_meleeDamage = 15 + (15 * modifier);
+	p_rangedDamage = 0 + (0 * modifier);
+	p_speed = p_speed + ( p_speed * modifier);
 
 	p_render.setColor(sf::Color(93, 160, 238, 255));
 

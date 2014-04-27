@@ -16,7 +16,7 @@ void MeleeAntBrain::think()
 
 	if (p_owner->distanceToTarget() <= 35 && p_owner->canAttack())
 	{
-		Game::p_game->addAttack(new MeleeAttack(p_owner, BaseAttack::OwnerGroup::Computer, p_owner->getPosition(), sf::milliseconds(500), "melee.png", p_owner->getMeleeDamage()));
+		Game::p_game->addAttack(new MeleeAttack(p_owner, BaseAttack::OwnerGroup::Computer, p_owner->getPosition(), sf::milliseconds(500), "media/melee.png", p_owner->getMeleeDamage()));
 		p_owner->resetAttackCooldown();
 	}
 }

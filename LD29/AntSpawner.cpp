@@ -5,10 +5,9 @@
 #include "FireAnt.h"
 #include "FastAnt.h"
 
-AntSpawner::AntSpawner(sf::Vector2f position, BaseAnt::AntType type, sf::Time rate)
+AntSpawner::AntSpawner(sf::Vector2f position, sf::Time rate)
 {
 	p_position = position;
-	p_spawnType = type;
 	p_rate = rate;
 	p_running = false;
 	reset();
@@ -22,16 +21,18 @@ void AntSpawner::update(sf::Time elapsed)
 
 		if (p_counter >= p_rate)
 		{
-			switch (p_spawnType)
+			int spawnType = rand() % (4 - 1) + 1;
+
+			switch (spawnType)
 			{
 			case BaseAnt::Melee:
-				Game::p_game->addAnt(new MeleeAnt(p_position, 40.0f));
+				Game::p_game->addAnt(new MeleeAnt(p_position, 40.0f, p_round));
 				break;
 			case BaseAnt::Ranged:
-				Game::p_game->addAnt(new FireAnt(p_position, 30.0f));
+				Game::p_game->addAnt(new FireAnt(p_position, 30.0f, p_round));
 				break;
 			case BaseAnt::Fast:
-				Game::p_game->addAnt(new FastAnt(p_position, 100.0f));
+				Game::p_game->addAnt(new FastAnt(p_position, 100.0f, p_round));
 				break;
 			default:
 				break;
@@ -42,9 +43,11 @@ void AntSpawner::update(sf::Time elapsed)
 	}
 }
 
-void AntSpawner::start()
+void AntSpawner::start(int round)
 {
 	p_running = true;
+	p_round = round;
+	p_counter = p_rate;
 }
 
 void AntSpawner::stop()

@@ -9,11 +9,11 @@
 Player::Player(sf::Vector2f position, float speed)
 : BaseAnt(AntType::Player, position, speed)
 {
-	p_health = 100;
+	p_health = 150;
 	p_armour = 100;
 	p_protein = 0;
 
-	p_meleeDamage = 30;
+	p_meleeDamage = 60;
 	p_rangedDamage = 40;
 
 	p_render.setColor(sf::Color(236, 190, 19, 255));
@@ -63,7 +63,7 @@ void Player::handleEvent(sf::Event& e)
 		{
 			if (canAttack())
 			{
-				Game::p_game->addAttack(new MeleeAttack(this, BaseAttack::OwnerGroup::Player, p_position, sf::milliseconds(500), "melee.png", p_meleeDamage));
+				Game::p_game->addAttack(new MeleeAttack(this, BaseAttack::OwnerGroup::Player, p_position, sf::milliseconds(500), "media/melee.png", p_meleeDamage));
 				resetAttackCooldown();
 			}
 		}
@@ -75,9 +75,22 @@ void Player::handleEvent(sf::Event& e)
 		{
 			if (canAttack())
 			{
-				Game::p_game->addAttack(new Projectile(this, BaseAttack::OwnerGroup::Player, p_position, p_moveTarget, sf::seconds(3), "fire.png", p_rangedDamage));
+				Game::p_game->addAttack(new Projectile(this, BaseAttack::OwnerGroup::Player, p_position, p_moveTarget, sf::seconds(3), "media/fire.png", p_rangedDamage));
 				resetAttackCooldown();
 			}
 		}
 	}
+}
+
+void Player::levelUp(int level)
+{
+	p_level = level;
+
+	float modifier = (float)p_level / 5.0f;
+
+	p_health += (30 * modifier);
+	p_armour += (20 * modifier);
+	p_meleeDamage += (20 * modifier);
+	p_rangedDamage += (0 * modifier);
+	p_speed += (((float)p_speed / 8) * modifier);
 }

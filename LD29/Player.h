@@ -18,7 +18,9 @@ public:
 	void increaseProtein(int amount) { p_protein += amount; }
 	void decreaseProtein(int amount) { p_protein -= amount; }
 	int getProtein() { return p_protein; }
+	void levelUp(int level);
 
 private:
 	int p_protein;
+	int p_level;
 };

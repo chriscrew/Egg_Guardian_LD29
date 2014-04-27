@@ -2,6 +2,8 @@
 #include "MeleeAttack.h"
 #include "Mouse.h"
 
+
+
 MeleeAttack::MeleeAttack(BaseAnt* owner, OwnerGroup group, sf::Vector2f position, sf::Time timeout, std::string texture, int damage)
 : BaseAttack(owner, group, position, texture, damage)
 {
@@ -17,6 +19,11 @@ MeleeAttack::MeleeAttack(BaseAnt* owner, OwnerGroup group, sf::Vector2f position
 	p_timeLeft = timeout;
 	p_render.setOrigin(7.5, 7.5);
 	p_render.setPosition(p_position);
+
+	p_attackSoundFile.loadFromFile("media/biteSound.wav");
+	p_attackSound.setBuffer(p_attackSoundFile);
+	p_attackSound.setVolume(50);
+	p_attackSound.play();
 }
 
 void MeleeAttack::update(sf::Time elapsed)

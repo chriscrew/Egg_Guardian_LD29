@@ -3,15 +3,17 @@
 #include "Mouse.h"
 #include "ProjectileAntBrain.h"
 
-FireAnt::FireAnt(sf::Vector2f position, float speed)
+FireAnt::FireAnt(sf::Vector2f position, float speed, int round)
 : BaseAnt(AntType::Ranged, position, speed)
 {
-	p_health = 30;
-	p_armour = 20;
-	p_proteinReward = 200;
+	float modifier = (float)round / 5.0f;
 
-	p_meleeDamage = 0;
-	p_rangedDamage = 25;
+	p_health = 30 + (30 * modifier);
+	p_armour = 20 + (20 * modifier);
+	p_proteinReward = 200 + (200 * modifier);
+	p_meleeDamage = 0 + (0 * modifier);
+	p_rangedDamage = 25 + (25 * modifier);
+	p_speed = p_speed + (p_speed * modifier);
 
 	p_render.setColor(sf::Color(171, 0, 11, 255));
 

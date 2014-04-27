@@ -22,6 +22,11 @@ Projectile::Projectile(BaseAnt* owner, OwnerGroup group, sf::Vector2f position, 
 	p_render.setRotation(rotation + 180);
 
 	p_timeLeft = timeout;
+
+	p_attackSoundFile.loadFromFile("media/fireSound.wav");
+	p_attackSound.setBuffer(p_attackSoundFile);
+	p_attackSound.setVolume(50);
+	p_attackSound.play();
 }
 
 void Projectile::update(sf::Time elapsed)

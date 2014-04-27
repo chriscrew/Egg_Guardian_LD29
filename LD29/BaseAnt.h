@@ -31,7 +31,7 @@ public:
 
 		p_walking = new Animation(0, 6, 7, 53, 50, sf::Time(sf::milliseconds(50)), 0);
 
-		p_texture.loadFromFile("ant.png");
+		p_texture.loadFromFile("media/ant.png");
 
 		p_render.setTexture(p_texture);
 		p_render.setTextureRect(p_walking->getFrame());
