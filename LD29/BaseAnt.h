@@ -108,6 +108,8 @@ public:
 
 	AntType getAntType() { return p_type; }
 
+	sf::Vector2f getPosition() { return p_position; }
+
 	void setSpeed(float speed) { p_speed = speed; }
 	float getSpeed() { return p_speed; }
 

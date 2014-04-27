@@ -3,6 +3,7 @@
 class BaseAnt;
 class Projectile;
 class Player;
+class AntSpawner;
 
 #include <SFML\Graphics.hpp>
 
@@ -14,9 +15,9 @@ const int map[] =
 { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
-1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
-1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
-1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
+1, 0, 0, 0, 0, 2, 2, 0, 0, 0, 0, 1,
+1, 0, 0, 0, 2, 2, 2, 2, 0, 0, 0, 1,
+1, 0, 0, 0, 0, 2, 2, 0, 0, 0, 0, 1,
 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 };
@@ -38,6 +39,7 @@ public:
 	void stop();
 
 	void addProjectile(Projectile* projectile);
+	void addAnt(BaseAnt* ant);
 
 private:
 	void update(sf::Time elapsed);
@@ -49,6 +51,9 @@ private:
 private:
 	bool p_isRunning;
 	sf::RenderWindow* p_renderWindow;
+
+	AntSpawner* p_spawnerRight;
+	AntSpawner* p_spawnerLeft;
 
 	EntityList p_entityList;
 	Player* p_player;

@@ -4,6 +4,7 @@
 #include "MeleeAnt.h"
 #include "Mouse.h"
 #include "Projectile.h"
+#include "AntSpawner.h"
 
 Game* Game::p_game = NULL;
 Mouse* Mouse::p_mouse;
@@ -27,11 +28,9 @@ Game::Game()
 
 	p_player = new Player(sf::Vector2f(400, 300), 80.0f);
 	p_entityList.push_back(p_player);
-	p_entityList.push_back(new MeleeAnt(sf::Vector2f(200, 175), 50.0f));
-	p_entityList.push_back(new MeleeAnt(sf::Vector2f(300, 175), 50.0f));
-	p_entityList.push_back(new MeleeAnt(sf::Vector2f(400, 175), 50.0f));
-	p_entityList.push_back(new MeleeAnt(sf::Vector2f(500, 175), 50.0f));
-	p_entityList.push_back(new MeleeAnt(sf::Vector2f(600, 175), 50.0f));
+
+	p_spawnerLeft = new AntSpawner(sf::Vector2f(200, 175), BaseAnt::AntType::Melee, sf::seconds(5));
+	p_spawnerRight = new AntSpawner(sf::Vector2f(600, 175), BaseAnt::AntType::Melee, sf::seconds(5));
 
 	p_dirttex.loadFromFile("dirtTiles.png");
 	p_guiFont.loadFromFile("guiFont.ttf");
@@ -41,6 +40,12 @@ Game::Game()
 
 Game::~Game()
 {
+	delete p_spawnerLeft;
+	p_spawnerLeft = NULL;
+
+	delete p_spawnerRight;
+	p_spawnerRight = NULL;
+
 	delete p_player;
 	p_player = NULL;
 
@@ -141,6 +146,9 @@ void Game::update(sf::Time elapsed)
 			p_entityList.erase(temp);
 		}
 	}
+
+	p_spawnerLeft->update(elapsed);
+	p_spawnerRight->update(elapsed);
 }
 
 void Game::render()
@@ -207,8 +215,8 @@ void Game::generateMap()
 		{
 			int tileNumber = map[x + y * tileX];
 
-			int tu = tileNumber % (128 / 64);
-			int tv = tileNumber / (128 / 64);
+			int tu = tileNumber % (192 / 64);
+			int tv = tileNumber / (192 / 64);
 
 			sf::Vertex* quad = &p_vertexMap[(x + y * tileX) * 4];
 
@@ -234,4 +242,10 @@ void Game::generateMap()
 void Game::addProjectile(Projectile* projectile)
 {
 	p_projectiles.push_back(projectile);
+}
+
+void Game::addAnt(BaseAnt* ant)
+{
+	ant->moveToTarget(p_player->getPosition());
+	p_entityList.push_back(ant);
 }

@@ -83,6 +83,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Animation.h" />
+    <ClInclude Include="AntSpawner.h" />
     <ClInclude Include="BaseAnt.h" />
     <ClInclude Include="Entity.h" />
     <ClInclude Include="Game.h" />
@@ -95,6 +96,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Animation.cpp" />
+    <ClCompile Include="AntSpawner.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="LD29.cpp" />
     <ClCompile Include="MeleeAnt.cpp" />

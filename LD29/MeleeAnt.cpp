@@ -14,7 +14,26 @@ MeleeAnt::MeleeAnt(sf::Vector2f position, float speed)
 
 void MeleeAnt::update(sf::Time elapsed)
 {
+	rotateToTarget(p_moveTarget);
 
+	sf::Vector2f travelDistance = (p_velocity * p_speed) * elapsed.asSeconds();
+	float travelLength = sqrt(pow(travelDistance.x, 2) + pow(travelDistance.y, 2));
+
+	if (travelLength < distanceToTarget())
+	{
+		p_position += travelDistance;
+	}
+	else
+	{
+		stop();
+	}
+
+	p_render.setPosition(p_position);
+
+	if (p_moving)
+	{
+		p_walking->update(elapsed);
+	}
 }
 
 void MeleeAnt::handleEvent(sf::Event& e)
