@@ -4,3 +4,7 @@ Assets/DeepJamGame.zip
 
 /ipch
 *.opensdf
+/Assets
+/Debug
+/Release
+/ipch
