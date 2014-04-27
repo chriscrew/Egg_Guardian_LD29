@@ -2,6 +2,8 @@
 #include "AntSpawner.h"
 #include "Game.h"
 #include "MeleeAnt.h"
+#include "FireAnt.h"
+#include "FastAnt.h"
 
 AntSpawner::AntSpawner(sf::Vector2f position, BaseAnt::AntType type, sf::Time rate)
 {
@@ -26,6 +28,10 @@ void AntSpawner::update(sf::Time elapsed)
 				Game::p_game->addAnt(new MeleeAnt(p_position, 80.0f));
 				break;
 			case BaseAnt::Ranged:
+				Game::p_game->addAnt(new FireAnt(p_position, 40.0f));
+				break;
+			case BaseAnt::Fast:
+				Game::p_game->addAnt(new FastAnt(p_position, 200.0f));
 				break;
 			default:
 				break;

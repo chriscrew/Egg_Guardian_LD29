@@ -1,7 +1,7 @@
 #pragma once
 
 class BaseAnt;
-class Projectile;
+class BaseAttack;
 class Player;
 class SpawnManager;
 
@@ -26,7 +26,7 @@ class Game
 {
 public:
 	typedef std::list<BaseAnt*> EntityList;
-	typedef std::list<Projectile*> ProjectileList;
+	typedef std::list<BaseAttack*> AttackList;
 
 public:
 	static Game* p_game;
@@ -38,7 +38,7 @@ public:
 	void start();
 	void stop();
 
-	void addProjectile(Projectile* projectile);
+	void addAttack(BaseAttack* attack);
 	void addAnt(BaseAnt* ant);
 
 private:
@@ -57,7 +57,7 @@ private:
 	EntityList p_entityList;
 	Player* p_player;
 
-	ProjectileList p_projectiles;
+	AttackList p_attacks;
 
 	sf::Texture p_dirttex;
 

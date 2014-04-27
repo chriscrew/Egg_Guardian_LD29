@@ -12,7 +12,8 @@ public:
 	{
 		Player,
 		Melee,
-		Ranged
+		Ranged,
+		Fast
 	};
 
 public:
@@ -116,6 +117,12 @@ public:
 	void setHealth(int health) { p_health = health; }
 	int getHealth() { return p_health; }
 
+	void setMeleeDamage(int damage) { p_meleeDamage = damage; }
+	int getMeleeDamage() { return p_meleeDamage; }
+
+	void setRangedDamage(int damage) { p_rangedDamage = damage; }
+	int getRangedDamage() { return p_rangedDamage; }
+
 	int getProteinReward() { return p_proteinReward; }
 
 	void damage(int amount)
@@ -126,6 +133,11 @@ public:
 			{
 				amount -= p_armour;
 				p_armour = 0;
+			}
+			else
+			{
+				p_armour -= amount;
+				return;
 			}
 		}
 
@@ -160,6 +172,9 @@ protected:
 
 	int p_health;
 	int p_armour;
+
+	int p_meleeDamage;
+	int p_rangedDamage;
 
 	int p_proteinReward;
 };

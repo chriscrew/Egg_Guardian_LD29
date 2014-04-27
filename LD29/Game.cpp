@@ -3,7 +3,7 @@
 #include "Player.h"
 #include "MeleeAnt.h"
 #include "Mouse.h"
-#include "Projectile.h"
+#include "BaseAttack.h"
 #include "AntSpawner.h"
 #include "SpawnManager.h"
 
@@ -20,13 +20,14 @@ float getFPS(const sf::Time& time) {
 Game::Game()
 : p_entityList()
 , p_collisions()
-, p_projectiles()
+, p_attacks()
 {
 	p_game = this;
 
 	p_isRunning = true;
 	p_renderWindow = new sf::RenderWindow(sf::VideoMode(800, 600), "LD29 - Beneath the Surface");
 	//p_renderWindow->setVerticalSyncEnabled(true);
+	p_renderWindow->setKeyRepeatEnabled(false);
 
 	Mouse::p_mouse = new Mouse();
 
@@ -37,9 +38,9 @@ Game::Game()
 	p_entityList.push_back(p_player);
 
 	p_spawnManager = new SpawnManager();
-	p_spawnManager->addSpawner(new AntSpawner(sf::Vector2f(200, 175), BaseAnt::AntType::Melee, sf::seconds(5)));
-	p_spawnManager->addSpawner(new AntSpawner(sf::Vector2f(600, 175), BaseAnt::AntType::Melee, sf::seconds(5)));
-	p_spawnManager->addSpawner(new AntSpawner(sf::Vector2f(600, 300), BaseAnt::AntType::Melee, sf::seconds(5)));
+	p_spawnManager->addSpawner(new AntSpawner(sf::Vector2f(200, 175), BaseAnt::AntType::Fast, sf::seconds(5)));
+	p_spawnManager->addSpawner(new AntSpawner(sf::Vector2f(400, 175), BaseAnt::AntType::Melee, sf::seconds(5)));
+	p_spawnManager->addSpawner(new AntSpawner(sf::Vector2f(600, 175), BaseAnt::AntType::Ranged, sf::seconds(5)));
 	p_spawnManager->start();
 
 	p_dirttex.loadFromFile("dirtTiles.png");
@@ -103,13 +104,16 @@ void Game::stop()
 
 void Game::update(sf::Time elapsed)
 {
+	if (p_player->isDead())
+		return;
+
 	p_currentRoundTime += elapsed;
 
-	ProjectileList::iterator it = p_projectiles.begin();
+	AttackList::iterator it = p_attacks.begin();
 
-	while (it != p_projectiles.end())
+	while (it != p_attacks.end())
 	{
-		ProjectileList::iterator temp = it;
+		AttackList::iterator temp = it;
 		++it;
 
 		if (!(*temp)->hasTimedOut())
@@ -119,7 +123,7 @@ void Game::update(sf::Time elapsed)
 		}
 		else
 		{
-			p_projectiles.erase(temp);
+			p_attacks.erase(temp);
 		}
 	}
 
@@ -135,14 +139,14 @@ void Game::update(sf::Time elapsed)
 			(*temp)->update(elapsed);
 			(*temp)->handleCollision(p_collisions);
 
-			for (Projectile* projectile : p_projectiles)
+			for (BaseAttack* attack : p_attacks)
 			{
-				if (projectile->getBounds().intersects((*temp)->getBounds()))
+				if (attack->getBounds().intersects((*temp)->getBounds()))
 				{
-					if (projectile->canDamage((*temp)->getAntType()))
+					if (attack->canDamage((*temp)->getAntType()))
 					{
-						(*temp)->damage(projectile->getDamage());
-						projectile->kill();
+						(*temp)->damage(attack->getDamage());
+						attack->kill();
 					}
 				}
 			}
@@ -183,7 +187,7 @@ void Game::render()
 		entity->draw(*p_renderWindow);
 	}
 
-	for (Projectile* projectile : p_projectiles)
+	for (BaseAttack* projectile : p_attacks)
 	{
 		projectile->draw(*p_renderWindow);
 	}
@@ -221,6 +225,16 @@ void Game::render()
 	p_renderWindow->draw(healthText);
 	p_renderWindow->draw(armourText);
 	p_renderWindow->draw(proteinText);
+
+	if (p_player->isDead())
+	{
+		sf::Text gameOverText;
+		gameOverText.setFont(p_guiFont);
+		gameOverText.setString("Game Over");
+		gameOverText.setCharacterSize(50);
+		gameOverText.setPosition(400, 300);
+		p_renderWindow->draw(gameOverText);
+	}
 
 	p_renderWindow->display();
 }
@@ -268,9 +282,9 @@ void Game::generateMap()
 	}
 }
 
-void Game::addProjectile(Projectile* projectile)
+void Game::addAttack(BaseAttack* attack)
 {
-	p_projectiles.push_back(projectile);
+	p_attacks.push_back(attack);
 }
 
 void Game::addAnt(BaseAnt* ant)

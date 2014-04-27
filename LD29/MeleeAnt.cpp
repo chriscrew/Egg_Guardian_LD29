@@ -5,9 +5,12 @@
 MeleeAnt::MeleeAnt(sf::Vector2f position, float speed)
 : BaseAnt(AntType::Melee, position, speed)
 {
-	p_health = 15;
-	p_armour = 10;
+	p_health = 50;
+	p_armour = 60;
 	p_proteinReward = 100;
+
+	p_meleeDamage = 30;
+	p_rangedDamage = 0;
 
 	p_render.setColor(sf::Color(93, 160, 238, 255));
 }

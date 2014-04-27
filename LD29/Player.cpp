@@ -3,6 +3,8 @@
 #include "Mouse.h"
 #include "Game.h"
 #include "Projectile.h"
+#include "MeleeAttack.h"
+
 
 Player::Player(sf::Vector2f position, float speed)
 : BaseAnt(AntType::Player, position, speed)
@@ -10,6 +12,9 @@ Player::Player(sf::Vector2f position, float speed)
 	p_health = 100;
 	p_armour = 100;
 	p_protein = 0;
+
+	p_meleeDamage = 10;
+	p_rangedDamage = 30;
 
 	p_render.setColor(sf::Color(236, 190, 19, 255));
 }
@@ -54,7 +59,15 @@ void Player::handleEvent(sf::Event& e)
 
 		if (e.mouseButton.button == sf::Mouse::Right)
 		{
-			Game::p_game->addProjectile(new Projectile(Projectile::OwnerGroup::Player, p_position, sf::Vector2f(Mouse::p_mouse->getMousePosition()), sf::seconds(3), "fire.png", 30));
+			Game::p_game->addAttack(new MeleeAttack(BaseAttack::OwnerGroup::Player, p_position, sf::milliseconds(500), "melee.png", p_meleeDamage));
+		}
+	}
+
+	if (e.type == sf::Event::KeyPressed)
+	{
+		if (e.key.code == sf::Keyboard::Space)
+		{
+			Game::p_game->addAttack(new Projectile(BaseAttack::OwnerGroup::Player, p_position, sf::Vector2f(Mouse::p_mouse->getMousePosition()), sf::seconds(3), "fire.png", p_rangedDamage));
 		}
 	}
 }
