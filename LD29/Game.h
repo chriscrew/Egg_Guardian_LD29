@@ -8,19 +8,12 @@ class SpawnManager;
 #include <SFML\Graphics.hpp>
 
 #include <list>
+#include <vector>
 
 const int tileX = 12;
 const int tileY = 9;
-const int map[] = 
-{ 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
-1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
-1, 0, 0, 0, 0, 2, 2, 0, 0, 0, 0, 1,
-1, 0, 0, 0, 2, 2, 2, 2, 0, 0, 0, 1,
-1, 0, 0, 0, 0, 2, 2, 0, 0, 0, 0, 1,
-1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
-1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
-1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 };
+
+const int MAX_ROUNDS = 5;
 
 class Game
 {
@@ -41,6 +34,8 @@ public:
 	void addAttack(BaseAttack* attack);
 	void addAnt(BaseAnt* ant);
 
+	sf::Vector2f getPlayerPosition();
+
 private:
 	void update(sf::Time elapsed);
 	void render();
@@ -49,6 +44,9 @@ private:
 	void generateMap();
 
 private:
+
+	sf::View p_camera;
+
 	bool p_isRunning;
 	sf::RenderWindow* p_renderWindow;
 
@@ -69,4 +67,10 @@ private:
 
 	sf::Time p_roundTime;
 	sf::Time p_currentRoundTime;
+	sf::Time p_restTime;
+	sf::Time p_restTimeCounter;
+
+	int p_currentRound;
+
+	std::vector<int> p_map;
 };

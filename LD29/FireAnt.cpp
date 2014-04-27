@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "FireAnt.h"
 #include "Mouse.h"
+#include "ProjectileAntBrain.h"
 
 FireAnt::FireAnt(sf::Vector2f position, float speed)
 : BaseAnt(AntType::Ranged, position, speed)
@@ -10,19 +11,25 @@ FireAnt::FireAnt(sf::Vector2f position, float speed)
 	p_proteinReward = 200;
 
 	p_meleeDamage = 0;
-	p_rangedDamage = 20;
+	p_rangedDamage = 25;
 
 	p_render.setColor(sf::Color(171, 0, 11, 255));
+
+	p_attackCooldown = sf::seconds(4);
+
+	p_brain = new ProjectileAntBrain(this);
 }
 
 void FireAnt::update(sf::Time elapsed)
 {
-	rotateToTarget(p_moveTarget);
+	BaseAnt::update(elapsed);
+
+	p_brain->think();
 
 	sf::Vector2f travelDistance = (p_velocity * p_speed) * elapsed.asSeconds();
 	float travelLength = sqrt(pow(travelDistance.x, 2) + pow(travelDistance.y, 2));
 
-	if (travelLength < distanceToTarget())
+	if (distanceToTarget() >= 200)
 	{
 		p_position += travelDistance;
 	}

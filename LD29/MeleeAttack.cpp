@@ -2,10 +2,10 @@
 #include "MeleeAttack.h"
 #include "Mouse.h"
 
-MeleeAttack::MeleeAttack(OwnerGroup group, sf::Vector2f position, sf::Time timeout, std::string texture, int damage)
-: BaseAttack(group, position, texture, damage)
+MeleeAttack::MeleeAttack(BaseAnt* owner, OwnerGroup group, sf::Vector2f position, sf::Time timeout, std::string texture, int damage)
+: BaseAttack(owner, group, position, texture, damage)
 {
-	sf::Vector2f distance = sf::Vector2f(Mouse::p_mouse->getMousePosition()) - position;
+	sf::Vector2f distance = owner->getTarget() - position;
 	float length = sqrt(pow(distance.x, 2) + pow(distance.y, 2));
 
 	sf::Vector2f direction;

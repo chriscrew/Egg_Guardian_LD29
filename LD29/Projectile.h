@@ -9,7 +9,7 @@
 class Projectile : public BaseAttack
 {
 public:
-	Projectile(OwnerGroup group, sf::Vector2f position, sf::Vector2f target, sf::Time timeout, std::string texture, int damage);
+	Projectile(BaseAnt* owner, OwnerGroup group, sf::Vector2f position, sf::Vector2f target, sf::Time timeout, std::string texture, int damage);
 	~Projectile() {}
 
 	virtual void update(sf::Time elapsed);

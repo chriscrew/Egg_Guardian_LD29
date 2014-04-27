@@ -59,6 +59,15 @@
     <ClInclude Include="MeleeAttack.h">
       <Filter>Source Files</Filter>
     </ClInclude>
+    <ClInclude Include="BaseAntBrain.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="MeleeAntBrain.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ProjectileAntBrain.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -95,6 +104,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="MeleeAttack.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="MeleeAntBrain.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ProjectileAntBrain.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

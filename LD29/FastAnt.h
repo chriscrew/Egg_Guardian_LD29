@@ -1,14 +1,9 @@
 #pragma once
 
-#include "BaseAnt.h"
+#include "MeleeAnt.h"
 
-class FastAnt : public BaseAnt
+class FastAnt : public MeleeAnt
 {
 public:
 	FastAnt(sf::Vector2f position, float speed);
-	~FastAnt();
-
-	virtual void update(sf::Time elapsed);
-	virtual void handleEvent(sf::Event& e);
-	virtual void handleCollision(std::list<sf::IntRect> walls);
 };

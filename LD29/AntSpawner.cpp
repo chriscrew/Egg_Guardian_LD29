@@ -25,13 +25,13 @@ void AntSpawner::update(sf::Time elapsed)
 			switch (p_spawnType)
 			{
 			case BaseAnt::Melee:
-				Game::p_game->addAnt(new MeleeAnt(p_position, 80.0f));
+				Game::p_game->addAnt(new MeleeAnt(p_position, 40.0f));
 				break;
 			case BaseAnt::Ranged:
-				Game::p_game->addAnt(new FireAnt(p_position, 40.0f));
+				Game::p_game->addAnt(new FireAnt(p_position, 30.0f));
 				break;
 			case BaseAnt::Fast:
-				Game::p_game->addAnt(new FastAnt(p_position, 200.0f));
+				Game::p_game->addAnt(new FastAnt(p_position, 100.0f));
 				break;
 			default:
 				break;

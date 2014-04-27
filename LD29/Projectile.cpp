@@ -1,8 +1,8 @@
 #include "stdafx.h"
 #include "Projectile.h"
 
-Projectile::Projectile(OwnerGroup group, sf::Vector2f position, sf::Vector2f target, sf::Time timeout, std::string texture, int damage)
-: BaseAttack(group, position, texture, damage)
+Projectile::Projectile(BaseAnt* owner, OwnerGroup group, sf::Vector2f position, sf::Vector2f target, sf::Time timeout, std::string texture, int damage)
+: BaseAttack(owner,group, position, texture, damage)
 {
 
 	p_render.setOrigin(10, 10);

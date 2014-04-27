@@ -43,6 +43,7 @@ void SpawnManager::stop()
 	for (AntSpawner* spawner : p_spawners)
 	{
 		spawner->stop();
+		spawner->reset();
 	}
 }
 

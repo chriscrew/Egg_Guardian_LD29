@@ -16,8 +16,9 @@ public:
 	};
 
 public:
-	BaseAttack(OwnerGroup group, sf::Vector2f position, std::string texture, int damage)
+	BaseAttack(BaseAnt* owner, OwnerGroup group, sf::Vector2f position, std::string texture, int damage)
 	{
+		p_owner = owner;
 		p_ownerGroup = group;
 		p_position = position;
 		p_damage = damage;
@@ -66,6 +67,9 @@ public:
 		if (p_ownerGroup == OwnerGroup::Player && !(antType == BaseAnt::AntType::Player))
 			return true;
 
+		if (p_ownerGroup == OwnerGroup::Computer && antType == BaseAnt::AntType::Player)
+			return true;
+
 		return false;
 	}
 
@@ -77,6 +81,7 @@ public:
 
 
 protected:
+	BaseAnt* p_owner;
 	OwnerGroup p_ownerGroup;
 
 	sf::Vector2f p_position;

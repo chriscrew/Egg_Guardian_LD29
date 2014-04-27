@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "MeleeAnt.h"
 #include "Mouse.h"
+#include "MeleeAntBrain.h"
 
 MeleeAnt::MeleeAnt(sf::Vector2f position, float speed)
 : BaseAnt(AntType::Melee, position, speed)
@@ -9,20 +10,26 @@ MeleeAnt::MeleeAnt(sf::Vector2f position, float speed)
 	p_armour = 60;
 	p_proteinReward = 100;
 
-	p_meleeDamage = 30;
+	p_meleeDamage = 15;
 	p_rangedDamage = 0;
 
 	p_render.setColor(sf::Color(93, 160, 238, 255));
+
+	p_attackCooldown = sf::seconds(3);
+
+	p_brain = new MeleeAntBrain(this);
 }
 
 void MeleeAnt::update(sf::Time elapsed)
 {
-	rotateToTarget(p_moveTarget);
+	BaseAnt::update(elapsed);
+
+	p_brain->think();
 
 	sf::Vector2f travelDistance = (p_velocity * p_speed) * elapsed.asSeconds();
 	float travelLength = sqrt(pow(travelDistance.x, 2) + pow(travelDistance.y, 2));
 
-	if (travelLength < distanceToTarget())
+	if (distanceToTarget() > 35)
 	{
 		p_position += travelDistance;
 	}

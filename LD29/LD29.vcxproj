@@ -85,16 +85,19 @@
     <ClInclude Include="Animation.h" />
     <ClInclude Include="AntSpawner.h" />
     <ClInclude Include="BaseAnt.h" />
+    <ClInclude Include="BaseAntBrain.h" />
     <ClInclude Include="BaseAttack.h" />
     <ClInclude Include="Entity.h" />
     <ClInclude Include="FastAnt.h" />
     <ClInclude Include="FireAnt.h" />
     <ClInclude Include="Game.h" />
+    <ClInclude Include="MeleeAntBrain.h" />
     <ClInclude Include="MeleeAttack.h" />
     <ClInclude Include="MeleeAnt.h" />
     <ClInclude Include="Mouse.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="Projectile.h" />
+    <ClInclude Include="ProjectileAntBrain.h" />
     <ClInclude Include="SpawnManager.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
@@ -106,10 +109,12 @@
     <ClCompile Include="FireAnt.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="LD29.cpp" />
+    <ClCompile Include="MeleeAntBrain.cpp" />
     <ClCompile Include="MeleeAttack.cpp" />
     <ClCompile Include="MeleeAnt.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="Projectile.cpp" />
+    <ClCompile Include="ProjectileAntBrain.cpp" />
     <ClCompile Include="SpawnManager.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>

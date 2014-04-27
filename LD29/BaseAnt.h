@@ -38,8 +38,15 @@ public:
 		p_render.setPosition(p_position);
 		p_render.setRotation(p_rotation);
 		p_render.setOrigin(25, 26);
+
+		p_attackCooldownCounter = sf::Time::Zero;
 	}
 
+	void update(sf::Time elapsed)
+	{
+		if (!canAttack())
+			p_attackCooldownCounter -= elapsed;
+	}
 
 	virtual void draw(sf::RenderWindow& renderer)
 	{
@@ -66,17 +73,17 @@ public:
 			p_velocity.x = distance.x / length;
 			p_velocity.y = distance.y / length;
 
-			rotateToTarget(target);
+			rotateToTarget();
 
 			p_moving = true;
 			p_walking->start();
 		}
 	}
 
-	void rotateToTarget(sf::Vector2f target)
+	void rotateToTarget()
 	{
-		float dx = target.x - p_position.x;
-		float dy = target.y - p_position.y;
+		float dx = p_moveTarget.x - p_position.x;
+		float dy = p_moveTarget.y - p_position.y;
 
 		float rotation = (atan2(dy, dx)) * 180 / PI;
 
@@ -155,6 +162,26 @@ public:
 	void setArmour(int armour) { p_armour = armour; }
 	int getArmour() { return p_armour; }
 
+	bool canAttack()
+	{
+		return p_attackCooldownCounter.asMilliseconds() <= 0;
+	}
+
+	void resetAttackCooldown()
+	{
+		p_attackCooldownCounter = p_attackCooldown;
+	}
+
+	sf::Vector2f getTarget()
+	{
+		return p_moveTarget;
+	}
+
+	void oppositeVelocity()
+	{
+		p_velocity = -p_velocity;
+	}
+
 protected:
 	AntType p_type;
 
@@ -173,6 +200,8 @@ protected:
 	int p_health;
 	int p_armour;
 
+	sf::Time p_attackCooldown;
+	sf::Time p_attackCooldownCounter;
 	int p_meleeDamage;
 	int p_rangedDamage;
 

@@ -17,6 +17,8 @@ Player::Player(sf::Vector2f position, float speed)
 	p_rangedDamage = 30;
 
 	p_render.setColor(sf::Color(236, 190, 19, 255));
+
+	p_attackCooldown = sf::milliseconds(300);
 }
 
 Player::~Player()
@@ -26,7 +28,7 @@ Player::~Player()
 
 void Player::update(sf::Time elapsed)
 {
-	rotateToTarget(sf::Vector2f(Mouse::p_mouse->getMousePosition()));
+	BaseAnt::update(elapsed);
 
 	sf::Vector2f travelDistance = (p_velocity * p_speed) * elapsed.asSeconds();
 	float travelLength = sqrt(pow(travelDistance.x, 2) + pow(travelDistance.y, 2));
@@ -59,7 +61,11 @@ void Player::handleEvent(sf::Event& e)
 
 		if (e.mouseButton.button == sf::Mouse::Right)
 		{
-			Game::p_game->addAttack(new MeleeAttack(BaseAttack::OwnerGroup::Player, p_position, sf::milliseconds(500), "melee.png", p_meleeDamage));
+			if (canAttack())
+			{
+				Game::p_game->addAttack(new MeleeAttack(this, BaseAttack::OwnerGroup::Player, p_position, sf::milliseconds(500), "melee.png", p_meleeDamage));
+				resetAttackCooldown();
+			}
 		}
 	}
 
@@ -67,7 +73,11 @@ void Player::handleEvent(sf::Event& e)
 	{
 		if (e.key.code == sf::Keyboard::Space)
 		{
-			Game::p_game->addAttack(new Projectile(BaseAttack::OwnerGroup::Player, p_position, sf::Vector2f(Mouse::p_mouse->getMousePosition()), sf::seconds(3), "fire.png", p_rangedDamage));
+			if (canAttack())
+			{
+				Game::p_game->addAttack(new Projectile(this, BaseAttack::OwnerGroup::Player, p_position, p_moveTarget, sf::seconds(3), "fire.png", p_rangedDamage));
+				resetAttackCooldown();
+			}
 		}
 	}
 }
