@@ -68,6 +68,9 @@
     <ClInclude Include="ProjectileAntBrain.h">
       <Filter>Source Files</Filter>
     </ClInclude>
+    <ClInclude Include="Egg.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">

@@ -73,7 +73,7 @@ public:
 		return false;
 	}
 
-	void kill()
+	virtual void kill()
 	{
 		p_timeLeft = sf::milliseconds(0);
 		p_damage = 0;

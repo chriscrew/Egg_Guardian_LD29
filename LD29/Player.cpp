@@ -13,8 +13,8 @@ Player::Player(sf::Vector2f position, float speed)
 	p_armour = 100;
 	p_protein = 0;
 
-	p_meleeDamage = 10;
-	p_rangedDamage = 30;
+	p_meleeDamage = 30;
+	p_rangedDamage = 40;
 
 	p_render.setColor(sf::Color(236, 190, 19, 255));
 

@@ -15,11 +15,16 @@ MeleeAttack::MeleeAttack(BaseAnt* owner, OwnerGroup group, sf::Vector2f position
 	p_position += direction * 20.0f;
 
 	p_timeLeft = timeout;
-	p_render.setOrigin(5, 5);
+	p_render.setOrigin(7.5, 7.5);
 	p_render.setPosition(p_position);
 }
 
 void MeleeAttack::update(sf::Time elapsed)
 {
 	BaseAttack::update(elapsed);
+}
+
+void MeleeAttack::kill()
+{
+	p_damage = 0;
 }

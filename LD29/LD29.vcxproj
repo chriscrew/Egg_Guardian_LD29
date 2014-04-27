@@ -87,6 +87,7 @@
     <ClInclude Include="BaseAnt.h" />
     <ClInclude Include="BaseAntBrain.h" />
     <ClInclude Include="BaseAttack.h" />
+    <ClInclude Include="Egg.h" />
     <ClInclude Include="Entity.h" />
     <ClInclude Include="FastAnt.h" />
     <ClInclude Include="FireAnt.h" />

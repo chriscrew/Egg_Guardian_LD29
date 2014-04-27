@@ -12,7 +12,7 @@ MeleeAntBrain::MeleeAntBrain(BaseAnt* owner)
 
 void MeleeAntBrain::think()
 {
-	p_owner->moveToTarget(Game::p_game->getPlayerPosition());
+	p_owner->moveToTarget(Game::p_game->getEggPosition());
 
 	if (p_owner->distanceToTarget() <= 35 && p_owner->canAttack())
 	{

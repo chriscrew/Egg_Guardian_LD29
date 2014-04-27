@@ -4,6 +4,7 @@ class BaseAnt;
 class BaseAttack;
 class Player;
 class SpawnManager;
+class Egg;
 
 #include <SFML\Graphics.hpp>
 
@@ -35,6 +36,7 @@ public:
 	void addAnt(BaseAnt* ant);
 
 	sf::Vector2f getPlayerPosition();
+	sf::Vector2f getEggPosition();
 
 private:
 	void update(sf::Time elapsed);
@@ -54,6 +56,7 @@ private:
 
 	EntityList p_entityList;
 	Player* p_player;
+	Egg* p_egg;
 
 	AttackList p_attacks;
 

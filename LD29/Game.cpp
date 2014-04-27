@@ -6,6 +6,7 @@
 #include "BaseAttack.h"
 #include "AntSpawner.h"
 #include "SpawnManager.h"
+#include "Egg.h"
 
 #include <iomanip>
 #include <sstream>
@@ -30,9 +31,9 @@ Game::Game()
 	{ 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
 	1, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
 	1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
-	1, 0, 0, 0, 0, 2, 2, 0, 0, 0, 0, 1,
-	1, 0, 0, 0, 2, 2, 2, 2, 0, 0, 0, 1,
-	1, 0, 0, 0, 0, 2, 2, 0, 0, 0, 0, 1,
+	1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
+	1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
+	1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
 	1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
 	1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
 	1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 };
@@ -57,11 +58,13 @@ Game::Game()
 	p_restTime = sf::seconds(5);
 	p_restTimeCounter = p_restTime;
 
-	p_player = new Player(sf::Vector2f(400, 300), 80.0f);
+	p_egg = new Egg(sf::Vector2f(416, 288));
+
+	p_player = new Player(sf::Vector2f(352, 288), 80.0f);
 	p_entityList.push_back(p_player);
 
 	p_spawnManager = new SpawnManager();
-	p_spawnManager->addSpawner(new AntSpawner(sf::Vector2f(96, 96), BaseAnt::AntType::Melee, sf::seconds(5)));
+	p_spawnManager->addSpawner(new AntSpawner(sf::Vector2f(96, 96), BaseAnt::AntType::Melee, sf::seconds(2)));
 	p_spawnManager->start();
 
 	p_dirttex.loadFromFile("dirtTiles.png");
@@ -125,6 +128,9 @@ void Game::stop()
 
 void Game::update(sf::Time elapsed)
 {
+	if (p_egg->isDead())
+		return;
+
 	if (p_player->isDead())
 		return;
 
@@ -142,6 +148,19 @@ void Game::update(sf::Time elapsed)
 		{
 			(*temp)->update(elapsed);
 			(*temp)->handleCollision(p_collisions);
+
+			if (!p_egg->isDead())
+			{
+				if ((*temp)->getBounds().intersects(p_egg->getBounds()))
+				{
+					if ((*temp)->canDamage(p_egg->getAntType()))
+					{
+						p_egg->damage((*temp)->getDamage());
+						(*temp)->kill();
+					}
+				}
+			}
+
 		}
 		else
 		{
@@ -205,7 +224,7 @@ void Game::update(sf::Time elapsed)
 			{
 				p_map[22] = 3;
 				generateMap();
-				p_spawnManager->addSpawner(new AntSpawner(sf::Vector2f(672, 96), BaseAnt::AntType::Fast, sf::seconds(5)));
+				p_spawnManager->addSpawner(new AntSpawner(sf::Vector2f(672, 96), BaseAnt::AntType::Fast, sf::seconds(2)));
 			}
 
 			if (p_currentRound == 3)
@@ -238,6 +257,8 @@ void Game::render()
 
 	p_renderWindow->draw(p_vertexMap, state);
 
+	p_egg->draw(*p_renderWindow);
+
 	for (Entity* entity : p_entityList)
 	{
 		entity->draw(*p_renderWindow);
@@ -250,62 +271,40 @@ void Game::render()
 
 	p_renderWindow->setView(p_renderWindow->getDefaultView());
 
+	sf::Text eggHealthText;
+	eggHealthText.setFont(p_guiFont);
+	eggHealthText.setString("Egg Health: " + std::to_string(p_egg->getHealth()));
+	eggHealthText.setCharacterSize(12);
+	eggHealthText.setPosition(5, 5);
+
 	sf::Text healthText;
 	healthText.setFont(p_guiFont);
 	healthText.setString("Health: " + std::to_string(p_player->getHealth()));
-	healthText.setCharacterSize(15);
-	healthText.setPosition(5, 5);
+	healthText.setCharacterSize(12);
+	healthText.setPosition(5, 20);
 
 	sf::Text armourText;
 	armourText.setFont(p_guiFont);
 	armourText.setString("Armour: " + std::to_string(p_player->getArmour()));
-	armourText.setCharacterSize(15);
-	armourText.setPosition(5, 25);
+	armourText.setCharacterSize(12);
+	armourText.setPosition(5, 35);
 
 	sf::Text proteinText;
 	proteinText.setFont(p_guiFont);
 	proteinText.setString("Protein: " + std::to_string(p_player->getProtein()));
-	proteinText.setCharacterSize(15);
-	proteinText.setPosition(5, 45);
+	proteinText.setCharacterSize(12);
+	proteinText.setPosition(5, 50);
 
 	sf::Text roundTimeText;
 	roundTimeText.setFont(p_guiFont);
 
-
-
+	p_renderWindow->draw(eggHealthText);
 	p_renderWindow->draw(healthText);
 	p_renderWindow->draw(armourText);
 	p_renderWindow->draw(proteinText);
-	
 
-	if (p_currentRound <= MAX_ROUNDS)
-	{
-		sf::Time roundLeft = p_roundTime - p_currentRoundTime;
 
-		std::ostringstream out;
-		out << std::setprecision(0) << round(roundLeft.asSeconds());
-
-		roundTimeText.setString("Time Left: " + out.str() + " (Round " + std::to_string(p_currentRound) + ")");
-		roundTimeText.setCharacterSize(15);
-		roundTimeText.setPosition(300, 5);
-		p_renderWindow->draw(roundTimeText);
-	}
-
-	if (p_currentRoundTime == p_roundTime && p_currentRound < MAX_ROUNDS)
-	{
-		sf::Text roundWaitText;
-		roundWaitText.setFont(p_guiFont);
-
-		std::ostringstream next;
-		next << std::setprecision(0) << round(p_restTimeCounter.asSeconds());
-
-		roundWaitText.setString("Next Round in: " + next.str());
-		roundWaitText.setCharacterSize(50);
-		roundWaitText.setPosition(96, 80);
-		p_renderWindow->draw(roundWaitText);
-	}
-
-	if (p_player->isDead())
+	if (p_player->isDead() || p_egg->isDead())
 	{
 		sf::Text gameOverText;
 		gameOverText.setFont(p_guiFont);
@@ -314,15 +313,45 @@ void Game::render()
 		gameOverText.setPosition(96, 80);
 		p_renderWindow->draw(gameOverText);
 	}
-
-	if (p_currentRound > MAX_ROUNDS)
+	else if (p_currentRound > MAX_ROUNDS)
 	{
+
 		sf::Text wonText;
 		wonText.setFont(p_guiFont);
 		wonText.setString("You Won");
 		wonText.setCharacterSize(50);
 		wonText.setPosition(96, 80);
 		p_renderWindow->draw(wonText);
+	}
+	else
+	{
+
+		if (p_currentRound <= MAX_ROUNDS)
+		{
+			sf::Time roundLeft = p_roundTime - p_currentRoundTime;
+
+			std::ostringstream out;
+			out << std::setprecision(0) << round(roundLeft.asSeconds());
+
+			roundTimeText.setString("Time Left: " + out.str() + " (Round " + std::to_string(p_currentRound) + ")");
+			roundTimeText.setCharacterSize(15);
+			roundTimeText.setPosition(300, 5);
+			p_renderWindow->draw(roundTimeText);
+		}
+
+		if (p_currentRoundTime == p_roundTime && p_currentRound < MAX_ROUNDS)
+		{
+			sf::Text roundWaitText;
+			roundWaitText.setFont(p_guiFont);
+
+			std::ostringstream next;
+			next << std::setprecision(0) << round(p_restTimeCounter.asSeconds());
+
+			roundWaitText.setString("Next Round in: " + next.str());
+			roundWaitText.setCharacterSize(50);
+			roundWaitText.setPosition(96, 80);
+			p_renderWindow->draw(roundWaitText);
+		}
 	}
 
 	p_renderWindow->display();
@@ -350,8 +379,8 @@ void Game::generateMap()
 		{
 			int tileNumber = p_map[x + y * tileX];
 
-			int tu = tileNumber % (256 / 64);
-			int tv = tileNumber / (256 / 64);
+			int tu = tileNumber % (320 / 64);
+			int tv = tileNumber / (320 / 64);
 
 			sf::Vertex* quad = &p_vertexMap[(x + y * tileX) * 4];
 
@@ -387,4 +416,9 @@ void Game::addAnt(BaseAnt* ant)
 sf::Vector2f Game::getPlayerPosition()
 {
 	return p_player->getPosition();
+}
+
+sf::Vector2f Game::getEggPosition()
+{
+	return p_egg->getPosition();
 }

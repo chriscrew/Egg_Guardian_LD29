@@ -11,4 +11,5 @@ public:
 	~MeleeAttack() {}
 
 	virtual void update(sf::Time elapsed);
+	virtual void kill();
 };
